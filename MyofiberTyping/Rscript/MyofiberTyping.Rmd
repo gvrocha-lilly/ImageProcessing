@@ -1,0 +1,190 @@
+---
+title: "Myofiber typing analysis"
+output: ''
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r readDataset}
+# Read all the txt files:
+InputPath = "/ROI/"
+Files <- list.files (path = InputPath, pattern = ".txt", full.names = T)
+DataTable <- lapply (Files, read.table)
+names (DataTable) <- gsub (":.*", "", sapply (DataTable, function (x) x[1, 1]))
+```
+
+```{r, Filt1_segmentationMetrics_denPlot}
+# Aggregated dataset for visualization
+Filt1 <- rbindlist (DataTable, idcol = TRUE) %>% #importing segmentation quality data
+  filter (Ch == 5) %>%
+  select (.id, Label, Mean, Mean_boundary, StdDev_boundary) %>%
+  unique () %>%
+  mutate (Sample = gsub ("-.*", "", .id)) %>%
+  mutate (Replicate = gsub (".*_", "", .id)) %>%
+  mutate (Individual = gsub ("_.*", "", .id)) %>%
+  mutate (Muscle = gsub ("_.*", "", gsub("^[^_]*_", "", Sample))) %>%
+  melt ()
+# Density plot of Segmentation metrics: Before filtering
+(BeforeFiltering <- ggplot (Filt1, aes_string (x = "value")) +
+    geom_density(alpha = .5,) +
+    theme_bw() + ggtitle ("Segmentation metrics: Before filtering") +
+  facet_wrap (variable ~ ., scales='free', nrow = 3) +
+  theme (legend.position = "none", axis.title = element_blank(), 
+         axis.text.x = element_text (size = 12, face = 'bold'), 
+         strip.text = element_text (size = 20)))
+```
+
+```{r, Filt1_segmentationMetrics_filtering}
+# Aggregated dataset for filtering
+Filt1 <- rbindlist (DataTable, idcol = TRUE) %>% 
+  filter (Ch == 5) %>%
+  select (.id, Label, Mean, Mean_boundary, StdDev_boundary) %>%
+  unique () %>%
+  mutate (Sample = gsub ("-.*", "", .id)) %>%
+  mutate (Replicate = gsub (".*_", "", .id)) %>%
+  mutate (Individual = gsub ("_.*", "", .id)) %>%
+  mutate (Muscle = gsub ("_.*", "", gsub("^[^_]*_", "", Sample))) 
+# Percentile base filtering
+Filt1_Mean <- Filt1 %>%
+  filter (quantile (Mean, 0.95) > Mean) 
+Filt1_Mean_boundary <- Filt1 %>%
+  filter (quantile (Mean_boundary, 0.05) < Mean_boundary) 
+Filt1_Mean_Mean_boundary <- merge (Filt1_Mean, Filt1_Mean_boundary)
+Filt_To_DataTable <- rbindlist (DataTable, idcol = TRUE) %>% 
+  filter (Ch == 5) %>% 
+  mutate (Included_SegQuality = ifelse (Label %in% Filt1_Mean_Mean_boundary$Label, 1, 0))
+AfterFiltering <- ggplot (Filt1_Mean_Mean_boundary %>% melt (), aes_string(x = "value")) +
+    geom_density(alpha = .5,) +
+    theme_bw() + ggtitle ("Segmentation: After filtering") +
+  facet_wrap (variable ~ ., scales='free', nrow = 3) +
+  theme (legend.position = "none", axis.title = element_blank(), 
+         axis.text.x = element_text (size = 12, face = 'bold'), 
+         strip.text = element_text (size = 20))
+
+plot_grid (BeforeFiltering, AfterFiltering)
+rm (list = setdiff (ls (), c ("DataTable", "Filt_To_DataTable")))
+```
+
+
+```{r Filt2_CSA_denPlot}
+# Aggregated dataset for visualization
+Filt2 <- rbindlist (DataTable, idcol = TRUE) %>% 
+  filter (Ch == 4) %>%
+  select (.id, Label, Area) %>%
+  unique () %>%
+  mutate (Sample = gsub ("-.*", "", .id)) %>%
+  mutate (Replicate = gsub (".*_", "", .id)) %>%
+  mutate (Individual = gsub ("_.*", "", .id)) %>%
+  mutate (Muscle = gsub ("_.*", "", gsub("^[^_]*_", "", Sample))) %>%
+  melt () 
+(BeforeFiltering <- ggplot (Filt2 %>% filter (value < 30000), aes_string(x = "value")) +
+    geom_density(alpha = .5,) +
+    theme_bw() + ggtitle ("across all individuals and replicates") +
+    facet_wrap (variable ~ Muscle, scales='free', nrow = 2) +
+    theme (legend.position = "none", axis.title = element_blank(), 
+         axis.text.x = element_text (size = 12, face = 'bold'), 
+         strip.text = element_text (size = 20)))
+```
+
+
+```{r Filt2_CSA_filtering}
+# Aggregated dataset for filtering
+Filt2 <- rbindlist (DataTable, idcol = TRUE) %>% 
+  filter (Ch == 4) %>%
+  select (.id, Label, Area) %>%
+  unique () %>%
+  mutate (Sample = gsub ("-.*", "", .id)) %>%
+  mutate (Replicate = gsub (".*_", "", .id)) %>%
+  mutate (Individual = gsub ("_.*", "", .id)) %>%
+  mutate (Muscle = gsub ("_.*", "", gsub("^[^_]*_", "", Sample)))
+## Filtering based on CSA
+for (Muscle in unique (Filt2$Muscle)) {
+  MuscleFibers <- Filt2$Label [Filt2$Muscle == Muscle] 
+  # Area 
+  Filt2_Area <- Filt2 %>% filter (Label %in% MuscleFibers) %>%
+    filter (quantile (Area, 0.10) < Area &  Area < quantile (Area, 0.99)) 
+  print (summary (Filt2_Area$Area))
+}
+Filt2_Area <- rbindlist (lapply (ls (pattern = "Filt2_Area_"), get))
+Filt2_Area_Laminin <- Filt2_Area %>% filter (gsub (":4$", "", Label) %in% gsub (":5$", "", Filt_To_DataTable$Label [Filt_To_DataTable$Included_SegQuality == 1]))
+Filt_To_DataTable <- Filt_To_DataTable %>% 
+  mutate (Included_Area = ifelse (gsub (":.$", "", Label) %in% gsub (":.$", "", Filt2_Area_Laminin$Label), 1, 0))
+AfterFiltering <- ggplot (Filt2_Area_Laminin %>% melt (), aes_string(x = "value")) +
+  geom_density (alpha = .5,) +
+  theme_bw () + ggtitle ("After filtering") +
+  facet_wrap (variable ~ Muscle, scales = 'free', nrow = 2) +
+  theme (legend.position = "none", axis.title = element_blank(), 
+         axis.text.x = element_text (size = 12, face = 'bold'), 
+         strip.text = element_text (size = 20))
+plot_grid (BeforeFiltering, AfterFiltering, nrow = 2)
+rm (list = setdiff (ls (), c ("DataTable", "Filt_To_DataTable")))
+```
+
+```{r Filt3_circularity_denPlot}
+# Aggregated dataset for visualization
+Filt3 <- rbindlist (DataTable, idcol = TRUE) %>% 
+  filter (Ch == 4) %>%
+  select (.id, Label, Circ.) %>%
+  unique () %>%
+  mutate (Sample = gsub ("-.*", "", .id)) %>%
+  mutate (Replicate = gsub (".*_", "", .id)) %>%
+  mutate (Individual = gsub ("_.*", "", .id)) %>%
+  mutate (Muscle = gsub ("_.*", "", gsub("^[^_]*_", "", Sample))) %>%
+  melt () 
+(BeforeFiltering <- ggplot (Filt3, aes_string(x = "value")) +
+  geom_density(alpha = .5,) +
+  theme_bw() + ggtitle ("Before filtering") +
+  facet_wrap (variable ~ ., scales='free', nrow = 1) +
+  theme (legend.position = "none", axis.title = element_blank(), 
+         axis.text.x = element_text (size = 12, face = 'bold'), 
+         strip.text = element_text (size = 20)))
+```
+
+```{r Filt3_circularity_filtering}
+# Aggregated dataset for filtering
+Filt3 <- rbindlist (DataTable, idcol = TRUE) %>% 
+  filter (Ch == 4) %>%
+  select (.id, Label, Circ.) %>%
+  unique () %>%
+  mutate (Sample = gsub ("-.*", "", .id)) %>%
+  mutate (Replicate = gsub (".*_", "", .id)) %>%
+  mutate (Individual = gsub ("_.*", "", .id)) %>%
+  mutate (Muscle = gsub ("_.*", "", gsub("^[^_]*_", "", Sample)))
+# Circularity
+Filt3_Circularity <- Filt3 %>%
+  filter (quantile (Circ., 0.01) < Circ.) 
+Filt3_Circularity_Area_Laminin <- Filt3_Circularity %>% filter (gsub (":.$", "", Label) %in% gsub (":.$", "", Filt_To_DataTable$Label) [Filt_To_DataTable$Included_Area == 1])
+Filt_To_DataTable <- Filt_To_DataTable %>% 
+  mutate (Included_Circ = ifelse (gsub (":.$", "", Label) %in% gsub (":.$", "", Filt3_Circularity_Area_Laminin$Label), 1, 0)) %>%
+  mutate (Included_SeqQAreaCirc = ifelse (Included_Circ == 1, 1, 
+                                          ifelse (Included_Area == 1, 0.7, 
+                                                  ifelse (Included_SegQuality == 1, 0.4, 0))))
+AfterFiltering <- ggplot (Filt3_Circularity_Area_Laminin %>% melt (), aes_string(x = "value")) +
+  geom_density (alpha = .5,) +
+  theme_bw () + ggtitle ("After filtering") +
+  facet_wrap (variable ~ ., scales = 'free', nrow = 3) +
+  theme (legend.position = "none", axis.title = element_blank(), 
+         axis.text.x = element_text (size = 12, face = 'bold'), 
+         strip.text = element_text (size = 20))
+  
+plot_grid (BeforeFiltering, AfterFiltering)
+```
+
+
+```{r save_visualizationInput}
+# Saving the filtering output to visualize filtered objects in ImageJ
+OutputPath = "I:/tabbassidaloii/ImageProcessing/MyofiberTyping/Samples/ROI"
+customFun = function (Filt_To_DataTable) {
+ write.table (Filt_To_DataTable, paste0 (OutputPath, "/", unique (Filt_To_DataTable$.id), "_Filt.txt"), quote = F, sep = "\t", row.names = F)
+ return (Filt_To_DataTable)
+ }
+Filt_To_DataTable %>% 
+  tibble::rownames_to_column(var = " ") %>%
+  group_by(.id) %>% 
+  do (customFun (.))
+```
+
+```{r }
+```
