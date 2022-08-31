@@ -212,7 +212,6 @@ AfterFiltering <- ggplot(Filt3_Circularity_Area_Laminin, aes_string(x = "Circ.")
 plot_grid(BeforeFiltering, AfterFiltering)
 
 ggsave(plot_grid(BeforeFiltering, AfterFiltering), device = "jpeg", units = "cm", width = 10, height = 3.3, filename = "step3.jpeg")
-load("F:/Corona-WorkingFromHome/Human-Muscle-Types/OurDataset/LabWorks/4.WetLabValidation/MyofiberTyping/ImageAnalysis/FilterOutPut/AllFibers.RData")
 rm(list = setdiff(ls(), c("DataTable", "Filt_To_DataTable"))) #Remove objects that are not required
 ```
 
@@ -253,7 +252,6 @@ rm (list = setdiff (ls (), c ("DataTable", "Filt_To_DataTable", "FiberData")))
 #Select one of the cryosections based on both number of remained myofibers after filtering and the image quality
 Samples <- c ("MD11_GL_s1", "MD11_GR_s1", "MD11_STD_s2", "MD11_STM_s2", "MD11_VL_s1",
               "MD11_VM_s2", "MD13_GL_s2", "MD13_GR_s0", "MD13_RF_ s1", "MD13_STD_s2",  "MD13_STM_s2", "MD13_VL_s1", "MD13_VM_s1", "...") 
-  Samples <- c ("MD11_GAL_Sam12-Batch1_2020.11.23_s1", "MD11_GRA_SecondTry_Sam74-Batch4_2020.11.26_s1", "MD11_SED_Sam71-Batch4_2020.11.26_s2", "MD11_SEM_Sam91-Batch5_2020.11.27_s2", "MD11_VAL_Sam52-Batch3_2020.11.25_s1", "MD11_VAM_Sam35-Batch2_2020.11.24_s2", "MD13_GAL_Sam2-Batch1_2020.11.23_s2", "MD13_GRA_Section3SecondTry_Sam82-Batch5_2020.11.27_s0", "MD13_REF_Sam37-Batch2_2020.11.24_s1", "MD13_SED_Sam99-Batch5_2020.11.27_s2", "MD13_SEM_Sam54-Batch3_2020.11.25_s2", "MD13_VAL_Sam25-Batch2_2020.11.24_s1", "MD13_VAM_Sam69-Batch4_2020.11.26_s1", "MD14_GAL_Sam96-Batch5_2020.11.27_s1", "MD14_GRA_Sam1-Batch1_2020.11.23_s2", "MD14_REF_Sam16-Batch1_2020.11.23_s2", "MD14_SED_Sam86-Batch5_2020.11.27_s2", "MD14_SEM_Sam31-Batch2_2020.11.24_s2", "MD14_VAL_Sam46-Batch3_2020.11.25_s1", "MD14_VAM_Sam59-Batch3_2020.11.25_s2", "MD15_GAL_Sam75-Batch4_2020.11.26_s2", "MD15_GRA_Sam13-Batch1_2020.11.23_s2", "MD15_REF_Sam44-Batch3_2020.11.25_s2", "MD15_SED_Sam7-Batch1_2020.11.23_s2", "MD15_SEM_Sam58-Batch3_2020.11.25_s1", "MD15_VAL_Sam90-Batch5_2020.11.27_s1", "MD15_VAM_Sam27-Batch2_2020.11.24_s2", "MD16_GAL_SecondTry_Sam55-Batch3_2020.11.25_s1", "MD16_GRA_Sam41-Batch3_2020.11.25_s2", "MD16_REF_Sam29-Batch2_2020.11.24_s2", "MD16_SED_Sam5-Batch1_2020.11.23_s1", "MD16_SEM_Sam73-Batch4_2020.11.26_s2", "MD16_VAL_Sam19-Batch1_2020.11.23_s1", "MD16_VAM_Sam87-Batch5_2020.11.27_s2", "MD17_GAL_Sam63-Batch4_2020.11.26_s2", "MD17_GRA_Sam88-Batch5_2020.11.27_s1", "MD17_SED_Sam22-Batch2_2020.11.24_s1", "MD17_SEM_Sam39-Batch2_2020.11.24_s2", "MD18_GAL_Sam38-Batch2_2020.11.24_s1", "MD18_GRA_Sam61-Batch4_2020.11.26_s1", "MD18_SED_Sam78-Batch4_2020.11.26_s1", "MD18_SEM_FirstTryDirty!_Sam21-Batch2_2020.11.24_s2", "MD18_VAL_Sam3-Batch1_2020.11.23_s2", "MD18_VAM_Sam50-Batch3_2020.11.25_s2", "MD19_GAL_Sam45-Batch3_2020.11.25_s0", "MD19_GRA_Sam23-Batch2_2020.11.24_s2", "MD19_REF_Sam56-Batch3_2020.11.25_s2", "MD19_SED_Sam32-Batch2_2020.11.24_s1", "MD19_SEM_Sam4-Batch1_2020.11.23_s1", "MD19_VAL_SecondTry_Sam72-Batch4_2020.11.26_s1", "MD19_VAM_Sam93-Batch5_2020.11.27_s1", "MD20_GAL_Sam26-Batch2_2020.11.24_s1",  "MD20_GRA_Sam36-Batch2_2020.11.24_s1", "MD20_REF_Sam98-Batch5_2020.11.27_s2", "MD20_SED_Sam49-Batch3_2020.11.25_s1", "MD20_SEM_Sam83-Batch5_2020.11.27_s2", "MD20_VAL_Sam67-Batch4_2020.11.26_s0", "MD20_VAM_Sam11-Batch1_2020.11.23_s2", "MD21_GAL_Sam14-Batch1_2020.11.23_s1", "MD21_GRA_Sam95-Batch5_2020.11.27_s2", "MD21_REF_Sam9-Batch1_2020.11.23_s2", "MD21_SED_Sam34-Batch2_2020.11.24_s1", "MD21_SEM_Sam42-Batch3_2020.11.25_s1", "MD21_VAL_Sam57-Batch3_2020.11.25_s2", "MD21_VAM_Sam77-Batch4_2020.11.26_s1", "MD22_GAL_Sam81-Batch5_2020.11.27_s2", "MD22_GRA_Sam68-Batch4_2020.11.26_s2", "MD22_REF_Sam51-Batch3_2020.11.25_s2", "MD22_SED_Sam92-Batch5_2020.11.27_s1", "MD22_SEM_Sam8-Batch1_2020.11.23_s2", "MD22_VAM_FirstTry_Sam24-Batch2_2020.11.24_s1", "MD26_GAL_Sam33-Batch2_2020.11.24_s0", "MD26_GRA_Sam53-Batch3_2020.11.25_s2", "MD26_REF_Sam86-Batch5_2020.11.27_s0", "MD26_SED_Sam17-Batch1_2020.11.23_s1", "MD26_SEM_SecondTry_Sam64-Batch4_2020.11.26_s2", "MD26_VAL_Sam94-Batch5_2020.11.27_s1", "MD27_GAL_Sam89-Batch5_2020.11.27_s2", "MD27_GRA_Sam10-Batch1_2020.11.23_s2", "MD27_REF_Sam66-Batch4_2020.11.26_s0", "MD27_SED_Sam43-Batch3_2020.11.25_s1", "MD27_SEM_Sam18-Batch1_2020.11.23_s2", "MD27_VAL_Sam28-Batch2_2020.11.24_s2", "MD28_GAL_Sam48-Batch3_2020.11.25_s2", "MD28_GRA_Sam30-Batch2_2020.11.24_s2", "MD28_REF_Sam79-Batch4_2020.11.26_s1", "MD28_SED_Sam62-Batch4_2020.11.26_s2", "MD28_SEM_Sam97-Batch5_2020.11.27_s2", "MD28_VAM_Sam15-Batch1_2020.11.23_s0", "MD31_GAL_Sam85-Batch5_2020.11.27_s1", "MD31_GRA_Sam40-Batch2_2020.11.24_s2", "MD31_REF_Sam70-Batch4_2020.11.26_s1", "MD31_SED_Sam65-Batch4_2020.11.26_s2", "MD31_SEM_Sam20-Batch1_2020.11.23_s2", "MD31_VAL_Sam76-Batch4_2020.11.26_s1", "MD31_VAM_Sam60-Batch3_2020.11.25_s1") 
 
 FiberData <- FiberData %>% 
   filter (.id %in% Samples)
@@ -322,13 +320,11 @@ rm(list = setdiff(ls(), c("Filt_To_DataTable", "FiberDataFilt1_3_scale_PImage_tr
 scaled log transformed data is the input for the meanshift clustering
 
 ```{r clustering, warning = FALSE, message = FALSE}
-# MS_FiberFile <- ms(cbind(FiberDataFilt1_3_scale_PImage_transformed[, "MyHC1"],
-#                          FiberDataFilt1_3_scale_PImage_transformed[, "MyHC2A"],
-#                          FiberDataFilt1_3_scale_PImage_transformed[, "MyHC2X"]),
-#                    h = 0.02, scaled = 0)
-# save (MS_FiberFile, file = "MS_MyoFiber_Filt1_3.RData")
-load ("F:/Corona-WorkingFromHome/Human-Muscle-Types/OurDataset/LabWorks/4.WetLabValidation/MyofiberTyping/ImageAnalysis/ClusterOutput/H0.02/MS02_MyoFiber_Filt1_3_NoScale.RData")
-load ("F:/Corona-WorkingFromHome/Human-Muscle-Types/OurDataset/LabWorks/4.WetLabValidation/MyofiberTyping/ImageAnalysis/DataToCluster/FiberDataFilt1_3_scale_PImage_transformed.RData")
+MS_FiberFile <- ms(cbind(FiberDataFilt1_3_scale_PImage_transformed[, "MyHC1"],
+                         FiberDataFilt1_3_scale_PImage_transformed[, "MyHC2A"],
+                         FiberDataFilt1_3_scale_PImage_transformed[, "MyHC2X"]),
+                    h = 0.02, scaled = 0)
+save (MS_FiberFile, file = "MS_MyoFiber_Filt1_3.RData")
 
 #Add the clustering results
 #Check if the data structure did not change and add clustering results
