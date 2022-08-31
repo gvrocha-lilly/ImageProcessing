@@ -43,6 +43,7 @@
 run("Close All");
 maskExt = "_Mask.tif";
 laminChannel = 4;
+sigma = 4;
 setBatchMode("hide");
 run("Set Measurements...", "area mean centroid feret's median redirect=None decimal=3");
 setOption("BlackBackground", true);
@@ -117,7 +118,8 @@ for (ik=0; ik<list.length; ik++){ // for loop to parse through names in main fol
 	
 	selectWindow(NameMaskImage);
 	run("Select None");
-	run("Gaussian Blur...", "sigma=4");
+	
+	run("Gaussian Blur...", "sigma="+sigma);
 	imageCalculator("Multiply create 32-bit", NameMaskImage,NameImage);
 	rename("lamin_masked");
 	
