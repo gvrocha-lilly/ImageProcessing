@@ -36,6 +36,8 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+scalef = 0.25;
+
 /////////////////////////////////////////////////////////////////////////////
 function getCZIPyramidSeriesIDs(){
 	// create an empty array
@@ -143,6 +145,8 @@ for (ik=0; ik<list.length; ik++){
 		Ext.getImageCount(imageCount);
 		
 		if (isSingleChannel){
+			print("Image is a single channel image");
+			
 			outputfilename = inputFolder + NameLamininImage + ".tif";
 			
 			if(File.exists(outputfilename)){
@@ -155,52 +159,41 @@ for (ik=0; ik<list.length; ik++){
 
 			// scale 1 levels down
 			selectWindow("c0");
-			run("Scale...", "x=0.25 y=0.25 interpolation=Bilinear average create");
+			run("Scale...", "x="+scalef+" y="+scalef+" interpolation=Bilinear average create");
 			selectWindow("c0");
 			close();
 
 			selectWindow("c0-1");
 			save(outputfilename);
 		}else{
+			Ext.getSizeC(sizeC)
+			print("Image is a "+sizeC+" channel image");
+			
 			outputfilename = inputFolder + NameLamininImage + "_merged.tif";
 			
 			if(File.exists(outputfilename)){
 				continue;
 			}
-			
-			// open the 4 channels
-			Ext.openImage("", 0);
-			rename("c0");
-			Ext.openImage("", 1);
-			rename("c1");
-			Ext.openImage("", 2);
-			rename("c2");
-			Ext.openImage("", 3);
-			rename("c3");
 
-			// scale 1 levels down
-			selectWindow("c0");
-			run("Scale...", "x=0.25 y=0.25 interpolation=Bilinear average create");
-			selectWindow("c1");
-			run("Scale...", "x=0.25 y=0.25 interpolation=Bilinear average create");
-			selectWindow("c2");
-			run("Scale...", "x=0.25 y=0.25 interpolation=Bilinear average create");
-			selectWindow("c3");
-			run("Scale...", "x=0.25 y=0.25 interpolation=Bilinear average create");
-			selectWindow("c3");
-			close();
-			selectWindow("c2");
-			close();
-			selectWindow("c1");
-			close();
-			selectWindow("c0");
-			close();
-
-			//selectWindow("c3-1");
-			//save(inputFolder + NameLamininImage + "_Lamin.tif");
-			//rename("c3-1");
 			
-			run("Merge Channels...", "c1=c0-1 c2=c1-1 c3=c2-1 c4=c3-1 create");
+			merge_cmd = "";
+			for (c = 0; c < sizeC; c++) {
+				// open the n channels
+				Ext.openImage("", c);
+				rename("c"+c);
+
+				// scale 1 levels down
+				selectWindow("c"+c);
+				run("Scale...", "x="+scalef+" y="+scalef+" interpolation=Bilinear average create");
+
+				selectWindow("c"+c);
+				close();
+
+				merge_cmd = merge_cmd + "c"+(c+1)+"=c"+c+"-1 ";
+			}
+			merge_cmd = merge_cmd + "create";
+			//print(merge_cmd);
+			run("Merge Channels...", merge_cmd);
 			
 			rename(NameLamininImage);
 
