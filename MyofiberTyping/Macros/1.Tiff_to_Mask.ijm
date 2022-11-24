@@ -45,6 +45,10 @@ function ArtefactDetectionOnLaminin(imgWindowTitle) {
 	getStatistics(area, mean, min, max, std, histogram);
 	getDimensions(width, height, channels, slices, frames);
 	getPixelSize(unit, pixelWidth, pixelHeight);
+
+	// restrict to area that is not clipped to 0 (outside scan area)
+	setThreshold(1, 65535, "raw");
+	run("Create Selection");
 	
 	//MinArea=1000;
 	MinArea=0.01*area;
