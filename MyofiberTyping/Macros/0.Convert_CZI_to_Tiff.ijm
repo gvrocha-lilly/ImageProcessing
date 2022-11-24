@@ -50,7 +50,7 @@ function getCZIPyramidSeriesIDs(){
 	seriesCount = seriesCount - 2; 
 	//print("seriesCount "+seriesCount);
 	
-	metadatakey = "Information|Image|SizeS #1";
+	metadatakey = "Information|Image|SizeS";
 	Ext.getMetadataValue(metadatakey, SizeS);
 	SizeS = parseInt(SizeS);
 	//print("SizeS: "+SizeS);
