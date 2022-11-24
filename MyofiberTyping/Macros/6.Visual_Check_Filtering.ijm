@@ -152,4 +152,4 @@ for (ik=0; ik<list.length; ik++){ // for loop to parse through names in main fol
 	run("Close All");
 }
 
-//eval("script", "System.exit(0);");
+eval("script", "System.exit(0);");
