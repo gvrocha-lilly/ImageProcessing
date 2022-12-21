@@ -1,2 +1,2 @@
 
-Scripts developed for myfibertyping staining, imaging, image quantification and analysis.
+Scripts developed for myofibertyping staining, imaging, image quantification and analysis.
