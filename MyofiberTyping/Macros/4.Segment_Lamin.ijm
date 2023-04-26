@@ -74,6 +74,9 @@ run("Set Measurements...", "area mean centroid feret's redirect=None decimal=3")
 roiManager("reset");
 maskExt = "_Lamin_Masked_Probabilities.tif";
 run("Close All");
+setOption("BlackBackground", true);
+run("Options...", "iterations=1 count=1 black do=Nothing");
+
 
 setBatchMode("hide");
 
@@ -110,9 +113,11 @@ for (ik=0; ik<list.length; ik++){ // for loop to parse through names in main fol
 	filename_ROI = ROIDir + GlobalName + "_ROI.zip";
 	filename_MFI = ROIDir + GlobalName + "_MFI.txt";
 	
+	print("Open File: "+filename);
 	open(filename);
 	NameLamininImage = getTitle();
 
+	print("Open File: "+filename_mask);
 	open(filename_mask);
 	NameMaskImage = getTitle();
 	//selectWindow(NameMaskImage);
