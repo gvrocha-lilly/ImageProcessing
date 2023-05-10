@@ -22,6 +22,7 @@
 //   
 //   Authors:   Lenard M. Voortman
 //   Version:   1.1 - refactored for distribution
+//   Version:   1.2 - fixed bug when number of sections > 9
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -58,11 +59,18 @@ function getCZIPyramidSeriesIDs(){
 	layers = newArray(SizeS);
 	//print("layers size"+lengthOf(layers));
 	for(i = 0; i < SizeS; i++) {
-		metadatakey = "Information|Image|S|Scene|PyramidInfo|PyramidLayersCount #" + i+1;
+		pyramidStringID = "" + i+1;
+		
+		nr0s = lengthOf("" + SizeS) - lengthOf("" + i + 1);
+		for (k = 0; k < nr0s; k++) {
+			pyramidStringID = "0" + pyramidStringID;
+		}
+		//print(pyramidStringID);
+		
+		metadatakey = "Information|Image|S|Scene|PyramidInfo|PyramidLayersCount #" + pyramidStringID;
 		Ext.getMetadataValue(metadatakey, value);
 		value = parseInt(value);
-		//print(i);
-		//print(lengthOf(layers));
+
 		layers[i] = value+1;
 	}
 	check = 0;
