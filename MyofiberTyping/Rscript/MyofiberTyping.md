@@ -1,4 +1,5 @@
-\#\#\#Introduction Here, we explain the step-by-step analysis for the
+### Introduction
+Here, we explain the step-by-step analysis for the
 myofiber type composition. We use a human dataset to walk you through
 all the necessary step. This dataset includes muscle cryosections of 15
 individuals stained with different MyHC informs (MyHC1, MyHC2A and
@@ -6,7 +7,7 @@ MyHC2X) and laminin (steps 14-30 in the STAR protocol). The samples were
 imaged and image processing and quantification were done as explained in
 steps 31-39 in the STAR protocol.
 
-\#\#\#R environment setup
+### Environment setup
 
 ``` r
 #Empty the R environment
@@ -42,7 +43,7 @@ suppressPackageStartupMessages({
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 ```
 
-\#\#\#Read all the txt files saved in step 39:
+### Read all the txt files saved in step 39:
 
 ``` r
 InputPath = "ROI/"
@@ -51,7 +52,7 @@ DataTable <- lapply(Files, read.table, as.is = T)
 names(DataTable) <- gsub(":.*", "", sapply(DataTable, function(x) x[1, 1]))
 ```
 
-\#\#\#Step1: Filtering based on segmentation certainty Laminin channel
+### Step1: Filtering based on segmentation certainty Laminin channel
 was used to define 3 segmentation metrics: Mean: Laminin intensity
 inside the object (The smaller the better) Mean\_boundary: Laminin
 intensity on the boundary (The larger the better) StdDev\_boundary:
@@ -120,10 +121,8 @@ ggsave(plot_grid(BeforeFiltering, AfterFiltering), device = "jpeg", units = "cm"
 rm(list = setdiff(ls(), c("DataTable", "Filt_To_DataTable"))) #Remove objects that are not required
 ```
 
-\#\#\#Step2: Filtering based on CSA The next filtering step is based on
-cross-sectional area (CSA). But as we apply a filtering based on the
-percentile, we include all the objects (including those that are
-filtered in the first step).
+### Step2: Filtering based on CSA 
+The next filtering step is based on cross-sectional area (CSA). But as we apply a filtering based on the percentile, we include all the objects (including those that are filtered in the first step).
 
 ``` r
 #Aggregated dataset for filtering
@@ -188,10 +187,8 @@ ggsave(plot_grid(BeforeFiltering, AfterFiltering, nrow = 2), device = "jpeg", un
 rm(list = setdiff(ls(), c("DataTable", "Filt_To_DataTable"))) #Remove objects that are not required
 ```
 
-\#\#\#Step3: Filtering based on circularity The next filtering step is
-based on circularity. The same as previous filtering, we apply a
-filtering based on the percentile and we include all the objects
-(including those that are filtered in the first step).
+### Step3: Filtering based on circularity 
+The next filtering step is based on circularity. The same as previous filtering, we apply a filtering based on the percentile and we include all the objects (including those that are filtered in the first step).
 
 ``` r
 #Aggregated dataset for filtering
@@ -209,7 +206,7 @@ Filt3 <- rbindlist(DataTable, idcol = TRUE) %>%
 ![](MyofiberTyping_files/figure-markdown_github/Filt3_circularity_denPlot-1.png)
 
 This filtering is done on all the muscles together since the circularity
-distribution is the same across all the muscle.
+distribution is the same across all the muscles.
 `included fibers: Circularity > 1th percentile`
 
 ``` r
@@ -238,8 +235,7 @@ load("F:/Corona-WorkingFromHome/Human-Muscle-Types/OurDataset/LabWorks/4.WetLabV
 rm(list = setdiff(ls(), c("DataTable", "Filt_To_DataTable"))) #Remove objects that are not required
 ```
 
-Saving the filtering output to visualize and justify filtered objects in
-ImageJ
+Saving the filtering output to visualize and justify filtered objects in ImageJ
 
 ``` r
 OutputPath = "ROI/"
@@ -314,7 +310,7 @@ FiberDataFilt1_3 <- FiberData %>%
 rm(list = setdiff(ls(), c("Filt_To_DataTable", "FiberDataFilt1_3"))) #Remove objects that are not required
 ```
 
-\#\#\#Scaling and transformation
+### Scaling and transformation
 
 ``` r
 #log transformation
@@ -371,8 +367,8 @@ for (ch in names(values.channels)) {
 rm(list = setdiff(ls(), c("Filt_To_DataTable", "FiberDataFilt1_3_scale_PImage_transformed"))) #Remove objects that are not required
 ```
 
-\#\#\#Meanshift Clustering scaled log transformed data is the input for
-the meanshift clustering
+### Meanshift Clustering 
+Scaled log transformed data is the input for the meanshift clustering
 
 ``` r
 # MS_FiberFile <- ms(cbind(FiberDataFilt1_3_scale_PImage_transformed[, "MyHC1"],
@@ -411,8 +407,7 @@ FiltClust_To_DataTable <- Filt_To_DataTable %>%
 rm(list = setdiff(ls(), c("FiltClust_To_DataTable"))) #Remove objects that are not required
 ```
 
-\#\#\#Visualization and interpretation of the myofiber clustering
-results
+### Visualization and interpretation of the myofiber clustering results
 
 ``` r
 col.isoform <- c ("MyHC1" = "#0066CC", "MyHC2A" = "#CC3333", "MyHC2X" = "#339966")
@@ -497,7 +492,7 @@ ggsave(Tosave, device = "jpeg", units = "cm", width = 12, height = 10, filename 
 rm(list = ls())
 ```
 
-\#\#\#Printing session info
+#### Printing session info
 
 ``` r
 sessionInfo ()
