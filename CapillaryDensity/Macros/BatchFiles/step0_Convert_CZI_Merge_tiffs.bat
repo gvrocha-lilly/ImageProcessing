@@ -2,7 +2,7 @@
 setlocal EnableDelayedExpansion
 
 :: Note: replace the path below with complete path to CZI datasets
-SET datapath=I:\tabbassidaloii\ImageProcessing\CapillaryDensity\Samples\
+SET datapath=I:\tabbassidaloii\ImageProcessing\CapillaryDensity\Images\
 
 :: Note: replace the path below with complete path to macro files
 SET macropath=I:\\tabbassidaloii\ImageProcessing\CapillaryDensity\Macros\
