@@ -1,27 +1,37 @@
 #@String inputFolder
 
 /////////////////////////////////////////////////////////////////////////////
-//   Myofiber Segmentation and Analysis
-//   Copyright (C) 2021  Lenard M. Voortman
+//   Capillary Density Analysis
+//   Copyright (C) 2023  Lenard M. Voortman and Tooba Abbassi-Daloii
 //
-//   This set of macros segments and analyses myofiber images
+//   This set of macros segments myofibers and capillaries and computes the capillary density.
 //
-//   step0_Convert_CZI_Merge_tiffs.bat
-//     > simple batch script to convert multiple shading corrected CZI files
-//       into single downsampled multichannel tiff
-//   step1_Myofiber_Analysis_Pipeline.bat
-//     > simple batch script that runs all the necessary steps sequentially
-//   
+//   Scripts:
+//   step0_Convert_CZI_Merge_tiffs.bat:
+//     > A simple batch script to convert multiple shading-corrected CZI files
+//       into a single downsampled multichannel TIFF.
+//   step1_Capillary_Density_Analysis_Pipeline.bat
+//     > A simple batch script that runs all the necessary steps sequentially.
+//
+//   The steps are:
 //   0.Convert_CZI_to_Tiff.ijm
 //   1.Tiff_to_Mask.ijm
-//   2.Masked_Lamin.ijm
-//   3.Pixelclass_Lamin_Masked.ijm
-//   4.Segment_Lamin.ilp
-//   5.Eexport_MFI_and_Laminin_Int_and_Distance.ijm
-//   6.Visual_Check_Filtering.ijm
+//   2.Masked_Laminin.ijm
+//   3.Pixelclass_Laminin_Masked.ilp
+//   4.Segment_Laminin.ijm
 //
-//   Authors:   Lenard M. Voortman
-//   Version:   1.1 - refactored for distribution
+//   Note: The above steps were developed for myofiber typing analysis 
+//   (https://github.com/tabbassidaloii/ImageProcessing/tree/main/MyofiberTyping/Macros) and 
+//   are detailed in a STAR protocol: https://doi.org/10.1016/j.xpro.2023.102075
+//
+//   5.Eexport_Area.ijm
+//   6.Export_Quant_CD31_CD105.ijm
+//   
+//      
+//
+//   Authors:   Lenard M. Voortman, Tooba Abbassi-Daloii
+//   Version:   1.1 - Refactored for distribution
+//   Version:   1.2 - Fixed bug when the number of sections > 9
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -34,6 +44,7 @@
 // 
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +87,7 @@ maskExt = "_Lamin_Masked_Probabilities.tif";
 run("Close All");
 setOption("BlackBackground", true);
 run("Options...", "iterations=1 count=1 black do=Nothing");
-
+inputFolder = inputFolder + File.separator;
 
 setBatchMode("hide");
 
@@ -144,4 +155,4 @@ for (ik=0; ik<list.length; ik++){ // for loop to parse through names in main fol
 	run("Close All");
 }
 
-eval("script", "System.exit(0);");
+//eval("script", "System.exit(0);");

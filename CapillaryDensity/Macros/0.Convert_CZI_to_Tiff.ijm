@@ -110,6 +110,7 @@ function getCZIPyramidSeriesIDs(){
 run("Bio-Formats Macro Extensions");
 run("Close All");
 setBatchMode("hide");
+inputFolder = inputFolder + File.separator;
 
 ///////////////////////////////////////////////////////////////
 list = getFileList(inputFolder);
@@ -123,7 +124,7 @@ for (ik=list.length-1; ik>=0; ik--){ // for loop to parse through files in main 
 print(inputFolder+"==> "+list.length+" set of images to treat");
 
 for (ik=0; ik<list.length; ik++){
-	currentFile=inputFolder+list[ik];
+	currentFile=inputFolder+File.separator+list[ik];
 
 	GlobalName = File.getNameWithoutExtension(currentFile);
 
@@ -214,4 +215,4 @@ print("Finished processing");
 
 setBatchMode("show");
 
-eval("script", "System.exit(0);");
+//I:\lab-f\OPMD\Sander\CAPILLARY\Imageseval("script", "System.exit(0);");
