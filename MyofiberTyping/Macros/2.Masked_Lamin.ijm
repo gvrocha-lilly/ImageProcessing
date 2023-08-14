@@ -47,6 +47,7 @@ sigma = 4;
 setBatchMode("hide");
 run("Set Measurements...", "area mean centroid feret's median redirect=None decimal=3");
 setOption("BlackBackground", true);
+inputFolder = inputFolder + File.separator;
 
 ///////////////////////////////////////////////////////////////
 

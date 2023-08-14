@@ -43,6 +43,7 @@ roiManager("reset");
 maskExt = "_Lamin_Segmentation.tif";
 run("Close All");
 run("Options...", "iterations=1 count=1 black do=Nothing");
+inputFolder = inputFolder + File.separator;
 
 setBatchMode("hide");
 

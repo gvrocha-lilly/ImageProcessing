@@ -76,6 +76,7 @@ exportBG = 128;                    // value to use for the background, e.g. 128 
 roiManager("reset");
 run("Close All");
 run("Options...", "iterations=1 count=1 black do=Nothing");
+inputFolder = inputFolder + File.separator;
 
 setBatchMode("hide");
 

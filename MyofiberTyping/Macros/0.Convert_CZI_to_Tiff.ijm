@@ -110,6 +110,7 @@ function getCZIPyramidSeriesIDs(){
 run("Bio-Formats Macro Extensions");
 run("Close All");
 setBatchMode("hide");
+inputFolder = inputFolder + File.separator;
 
 ///////////////////////////////////////////////////////////////
 list = getFileList(inputFolder);

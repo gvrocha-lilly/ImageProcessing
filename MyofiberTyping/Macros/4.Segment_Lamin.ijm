@@ -76,7 +76,7 @@ maskExt = "_Lamin_Masked_Probabilities.tif";
 run("Close All");
 setOption("BlackBackground", true);
 run("Options...", "iterations=1 count=1 black do=Nothing");
-
+inputFolder = inputFolder + File.separator;
 
 setBatchMode("hide");
 
