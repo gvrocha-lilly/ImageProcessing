@@ -89,7 +89,7 @@ for (ik=list.length-1; ik>=0; ik--){ // for loop to parse through files in main 
 	}
 }
 
-ROIDir=inputFolder+"ROI\\";
+ROIDir=inputFolder+"ROI"+ File.separator;  // Small adjustment: "ROI\\" -> "ROI"+ File.separator for portability
 if(File.exists(ROIDir) < 1){
 	File.makeDirectory(ROIDir);
 }

@@ -56,8 +56,8 @@ for (ik=list.length-1; ik>=0; ik--){ // for loop to parse through files in main 
 	}
 }
 
-ROIDir=inputFolder+"ROI\\";
-CheckDir=inputFolder+"check\\";
+ROIDir=inputFolder+"ROI"+ File.separator; // Small adjustment: "ROI\\" -> "ROI"+ File.separator for portability
+CheckDir=inputFolder+"check"+ File.separator; // Small adjustment: "check\\" -> "check"+ File.separator for portability
 if(File.exists(CheckDir) < 1){
 	File.makeDirectory(CheckDir);
 }
@@ -65,6 +65,7 @@ if(File.exists(CheckDir) < 1){
 
 
 /////////////////////////////
+// Should these be adaptive? If so, how?
 r_min = 143;
 r_max = 1000;
 g_min = 632;

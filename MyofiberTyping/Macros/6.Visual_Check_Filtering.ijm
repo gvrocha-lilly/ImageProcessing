@@ -81,8 +81,8 @@ inputFolder = inputFolder + File.separator;
 setBatchMode("hide");
 
 ///////////////////////////////////////////////////////////////
-ROIDir=inputFolder+"ROI\\";
-CheckDir=inputFolder+"check\\";
+ROIDir=inputFolder+"ROI"+ File.separator; // Small adjustment: "ROI\\" -> "ROI"+ File.separator for portability
+CheckDir=inputFolder+"check"+ File.separator; // Small adjustment: "check\\" -> "check"+ File.separator for portability
 
 list = getFileList(ROIDir);
 for (ik=list.length-1; ik>=0; ik--){ // for loop to parse through files in main folder 
